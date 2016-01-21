@@ -2718,19 +2718,23 @@ public final class PluginImpl extends Plugin
     {
         final Collection<String> types = new LinkedList<String>();
         final BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
-        String line;
-
-        while ( ( line = reader.readLine() ) != null )
-        {
-            if ( line.indexOf( '#' ) > -1 )
+        try {
+            String line;
+    
+            while ( ( line = reader.readLine() ) != null )
             {
-                continue;
+                if ( line.indexOf( '#' ) > -1 )
+                {
+                    continue;
+                }
+    
+                if ( line.trim().length() > 0 )
+                {
+                    types.add( line.trim() );
+                }
             }
-
-            if ( line.trim().length() > 0 )
-            {
-                types.add( line.trim() );
-            }
+        } finally {
+            reader.close();
         }
 
         return Collections.unmodifiableCollection( types );
