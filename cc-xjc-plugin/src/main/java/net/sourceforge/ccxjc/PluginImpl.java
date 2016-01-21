@@ -514,7 +514,7 @@ public final class PluginImpl extends Plugin
                 this.log( Level.WARNING, "couldNotAddStdCtor", clazz.implClass.binaryName() );
             }
 
-            if ( this.getCopyConstructor( clazz ) == null )
+            if ( this.getOrGenerateCopyConstructor( clazz ) == null )
             {
                 this.log( Level.WARNING, "couldNotAddCopyCtor", clazz.implClass.binaryName() );
             }
@@ -571,11 +571,16 @@ public final class PluginImpl extends Plugin
 
     private JMethod getCopyConstructor( final ClassOutline clazz )
     {
-        JMethod ctor = clazz.implClass.getConstructor( new JType[]
+        final JMethod ctor = clazz.implClass.getConstructor( new JType[]
             {
                 clazz.implClass
             } );
+        return ctor;
+    }
 
+    private JMethod getOrGenerateCopyConstructor( final ClassOutline clazz )
+    {
+        JMethod ctor = this.getCopyConstructor(clazz);
         if ( ctor == null )
         {
             ctor = this.generateCopyConstructor( clazz );
@@ -2473,8 +2478,14 @@ public final class PluginImpl extends Plugin
 
         final JBlock copyBlock = new JBlock( false, false );
         copyBlock.directStatement( "// " + getMessage( "title" ) );
-        final JVar clone = copyBlock.decl( JMod.FINAL, clazz.implClass, "clone",
-                                           JExpr.cast( clazz.implClass, JExpr._super().invoke( "clone" ) ) );
+
+        final JExpression jE;
+        if (!clazz.implClass.isAbstract() && clazz.implClass._extends().isAbstract() && getCopyConstructor(clazz) != null) {
+            jE = JExpr._new( clazz.implClass ).arg(JExpr._this());
+        } else {
+            jE = JExpr.cast( clazz.implClass, JExpr._super().invoke( "clone" ) );
+        }
+        final JVar clone = copyBlock.decl( JMod.FINAL, clazz.implClass, "clone", jE );
 
         for ( FieldOutline field : clazz.getDeclaredFields() )
         {
