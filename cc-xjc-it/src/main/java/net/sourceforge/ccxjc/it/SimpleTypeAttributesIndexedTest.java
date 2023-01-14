@@ -31,15 +31,13 @@ package net.sourceforge.ccxjc.it;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import junit.framework.Assert;
 import net.sourceforge.ccxjc.it.model.priv.indexed.valueclass.ccxjcit.SimpleTypeAttributes;
 import org.apache.commons.lang.SerializationUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -71,7 +69,7 @@ public class SimpleTypeAttributesIndexedTest
     {
         if ( this.testCalendar == null )
         {
-            this.testCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            this.testCalendar = CommonHelper.now();
         }
 
         return this.testCalendar;
@@ -81,7 +79,7 @@ public class SimpleTypeAttributesIndexedTest
     {
         if ( this.testDuration == null )
         {
-            this.testDuration = DatatypeFactory.newInstance().newDuration( 1000L );
+            this.testDuration = CommonHelper.createDurationFromMillis( 1000L );
         }
 
         return this.testDuration;
@@ -155,22 +153,22 @@ public class SimpleTypeAttributesIndexedTest
 
     public void assertTestBytes( final byte[] bytes )
     {
-        Assert.assertTrue( Arrays.equals( this.getTestBytes(), bytes ) );
+        Assert.assertArrayEquals( this.getTestBytes(), bytes );
     }
 
     public void assertTestEntities( final String[] entities )
     {
-        Assert.assertTrue( Arrays.equals( this.getTestEntities(), entities ) );
+        Assert.assertArrayEquals( this.getTestEntities(), entities );
     }
 
     public void assertTestIdRefs( final Object[] idrefs )
     {
-        Assert.assertTrue( Arrays.equals( this.getTestIdRefs(), idrefs ) );
+        Assert.assertArrayEquals( this.getTestIdRefs(), idrefs );
     }
 
     public void assertTestTokens( final String[] tokens )
     {
-        Assert.assertTrue( Arrays.equals( this.getTestTokens(), tokens ) );
+        Assert.assertArrayEquals( this.getTestTokens(), tokens );
     }
 
     public SimpleTypeAttributes getTestSimpleTypeAttributes() throws DatatypeConfigurationException
@@ -213,7 +211,7 @@ public class SimpleTypeAttributesIndexedTest
         t.setQName( this.getTestQName() );
         t.setShort( (short) 100 );
         t.setString( "String" );
-        t.setTime( DatatypeFactory.newInstance().newXMLGregorianCalendar() );
+        t.setTime( this.getTestCalendar() );
         t.setToken( "Token" );
         t.setUnsignedByte( (short) 100 );
         t.setUnsignedInt( 100L );
@@ -232,16 +230,16 @@ public class SimpleTypeAttributesIndexedTest
         Assert.assertEquals( "any", a.getAnySimpleType() );
         Assert.assertEquals( "anyURI", a.getAnyURI() );
         this.assertTestBytes( a.getBase64Binary() );
-        Assert.assertEquals( true, a.isBoolean() );
+        Assert.assertTrue( a.isBoolean() );
         Assert.assertEquals( 1, a.getByte() );
         Assert.assertEquals( this.getTestCalendar(), a.getDate() );
         Assert.assertEquals( this.getTestCalendar(), a.getDateTime() );
         Assert.assertEquals( BigDecimal.TEN, a.getDecimal() );
-        Assert.assertEquals( 100.0D, a.getDouble() );
+        Assert.assertEquals(100.0D, a.getDouble(), CommonHelper.DOUBLE_EPSILON );
         Assert.assertEquals( this.getTestDuration(), a.getDuration() );
         this.assertTestEntities( a.getENTITIES() );
         Assert.assertEquals( "ENTITY", a.getENTITY() );
-        Assert.assertEquals( 100.0F, a.getFloat() );
+        Assert.assertEquals(100.0F, a.getFloat(), CommonHelper.FLOAT_EPSILON );
         Assert.assertEquals( this.getTestCalendar(), a.getGDay() );
         Assert.assertEquals( this.getTestCalendar(), a.getGMonth() );
         Assert.assertEquals( this.getTestCalendar(), a.getGMonthDay() );

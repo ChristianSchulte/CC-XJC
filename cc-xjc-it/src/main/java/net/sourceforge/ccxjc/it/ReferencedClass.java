@@ -29,10 +29,11 @@
  */
 package net.sourceforge.ccxjc.it;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jvnet.jaxb2_commons.lang.builder.CopyBuilder;
+import org.jvnet.jaxb2_commons.lang.CopyStrategy2;
+import org.jvnet.jaxb2_commons.lang.EqualsStrategy2;
+import org.jvnet.jaxb2_commons.lang.HashCodeStrategy2;
+import org.jvnet.jaxb2_commons.lang.ToStringStrategy2;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
 /**
  * Class referenced by {@code &lt;jaxb:class ref="net.sourceforge.ccxjc.it.ReferencedClass"&gt;} test customizations.
@@ -54,11 +55,11 @@ public class ReferencedClass implements Cloneable
     }
 
     @Override
-    public ReferencedClass clone()
+    public Object clone()
     {
         try
         {
-            return (ReferencedClass) super.clone();
+            return super.clone();
         }
         catch ( final CloneNotSupportedException e )
         {
@@ -66,21 +67,19 @@ public class ReferencedClass implements Cloneable
         }
     }
 
-    public void toString( final ToStringBuilder toStringBuilder )
-    {
+    public StringBuilder appendFields( final ObjectLocator locator, final StringBuilder buffer, final ToStringStrategy2 strategy ) {
+        return buffer;
     }
 
-    public void equals( final Object object, final EqualsBuilder equalsBuilder )
-    {
+    public boolean equals( final ObjectLocator thisLocator, final ObjectLocator thatLocator, final Object object, final EqualsStrategy2 strategy ) {
+        return true;
     }
 
-    public void hashCode( final HashCodeBuilder hashCodeBuilder )
-    {
+    public int hashCode( final ObjectLocator locator, final HashCodeStrategy2 strategy ) {
+        return 0;
     }
 
-    public Object copyTo( final Object target, final CopyBuilder copyBuilder )
-    {
+    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy2 strategy) {
         return target;
     }
-
 }

@@ -64,9 +64,6 @@ import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.xml.bind.v2.model.annotation.Locatable;
-import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
 import java.io.BufferedReader;
@@ -107,14 +104,19 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Level;
-import javax.activation.MimeType;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+
+import org.glassfish.jaxb.core.v2.model.annotation.Locatable;
+import org.glassfish.jaxb.core.v2.model.core.ID;
+import org.glassfish.jaxb.core.v2.runtime.Location;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
+
+import jakarta.activation.MimeType;
+import jakarta.xml.bind.JAXBElement;
 
 /**
  * CC-XJC plugin implementation.
@@ -519,10 +521,10 @@ public final class PluginImpl extends Plugin
                 this.log( Level.WARNING, "couldNotAddCopyCtor", clazz.implClass.binaryName() );
             }
 
-            if ( this.getCloneMethod( clazz ) == null )
+            /*if ( this.getCloneMethod( clazz ) == null )
             {
                 this.log( Level.WARNING, "couldNotAddMethod", "clone", clazz.implClass.binaryName() );
-            }
+            }*/
         }
 
         this.log( Level.INFO, "report", this.methodCount, this.constructorCount, this.expressionCount );
@@ -1093,7 +1095,7 @@ public final class PluginImpl extends Plugin
             }
 
             objectNotNull._then()._if( o._instanceof( cloneable ) )._then()._return(
-                JExpr.invoke( JExpr.cast( cloneable, o ), ( "clone" ) ) );
+              JExpr.cast(cloneable, JExpr.invoke( JExpr.cast( cloneable, o ), ( "clone" ) ) ) );
 
         }
 
@@ -2158,16 +2160,17 @@ public final class PluginImpl extends Plugin
                                                     final JBlock block, final JExpression sourceExpr,
                                                     final boolean sourceMaybeNull )
     {
-        block.directStatement(
-            "// CClassInfo: " + type.toType( fieldOutline.parent().parent(), Aspect.IMPLEMENTATION ).binaryName() );
+        final var typeClass = type.toType(fieldOutline.parent().parent(), Aspect.IMPLEMENTATION);
+        block.directStatement("// CClassInfo: " + typeClass.binaryName() );
 
+        final var cloneExpr = JExpr.cast(typeClass, sourceExpr.invoke( "clone" ));
         if ( sourceMaybeNull )
         {
-            return JOp.cond( sourceExpr.eq( JExpr._null() ), JExpr._null(), sourceExpr.invoke( "clone" ) );
+            return JOp.cond( sourceExpr.eq( JExpr._null() ), JExpr._null(), cloneExpr );
         }
         else
         {
-            return sourceExpr.invoke( "clone" );
+            return cloneExpr;
         }
     }
 

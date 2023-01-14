@@ -29,10 +29,10 @@
  */
 package net.sourceforge.ccxjc.it;
 
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-import javax.xml.bind.DataBindingException;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
+import jakarta.xml.bind.DataBindingException;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * {@code XmlAdapter} adapting {@code String} to {@code MimeType}.

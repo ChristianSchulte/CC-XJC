@@ -48,7 +48,7 @@
     <jaxb:bindings node=".//xs:complexType[@name='AdapterTestType']/xs:attribute[@name='standardMimeType']">
       <jaxb:property>
         <jaxb:baseType>
-          <jaxb:javaType name="javax.activation.MimeType"
+          <jaxb:javaType name="jakarta.activation.MimeType"
                          parseMethod="net.sourceforge.ccxjc.it.MimeTypeXmlAdapter.parseMimeType"
                          printMethod="net.sourceforge.ccxjc.it.MimeTypeXmlAdapter.printMimeType"/>
         </jaxb:baseType>
@@ -57,7 +57,7 @@
     <jaxb:bindings node=".//xs:complexType[@name='AdapterTestType']/xs:attribute[@name='xjcMimeType']">
       <jaxb:property>
         <jaxb:baseType>
-          <xjc:javaType name="javax.activation.MimeType" adapter="net.sourceforge.ccxjc.it.MimeTypeXmlAdapter"/>
+          <xjc:javaType name="jakarta.activation.MimeType" adapter="net.sourceforge.ccxjc.it.MimeTypeXmlAdapter"/>
         </jaxb:baseType>
       </jaxb:property>
     </jaxb:bindings>

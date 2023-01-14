@@ -32,15 +32,15 @@ package net.sourceforge.ccxjc.it;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import junit.framework.Assert;
 import net.sourceforge.ccxjc.it.model.priv.collections.valueclass.ccxjcit.SimpleTypeAttributes;
 import org.apache.commons.lang.SerializationUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -72,7 +72,7 @@ public class SimpleTypeAttributesCollectionsTest
     {
         if ( this.testCalendar == null )
         {
-            this.testCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            this.testCalendar = CommonHelper.now();
         }
 
         return this.testCalendar;
@@ -82,7 +82,7 @@ public class SimpleTypeAttributesCollectionsTest
     {
         if ( this.testDuration == null )
         {
-            this.testDuration = DatatypeFactory.newInstance().newDuration( 1000L );
+            this.testDuration = CommonHelper.createDurationFromMillis( 1000L );
         }
 
         return this.testDuration;
@@ -106,10 +106,7 @@ public class SimpleTypeAttributesCollectionsTest
     {
         if ( this.testEntities == null )
         {
-            this.testEntities = Arrays.asList( new String[]
-                {
-                    "ENTITY 1", "ENTITY 2", "ENTITY 3"
-                } );
+            this.testEntities = Arrays.asList( "ENTITY 1", "ENTITY 2", "ENTITY 3" );
 
         }
 
@@ -120,10 +117,7 @@ public class SimpleTypeAttributesCollectionsTest
     {
         if ( this.testIdRefs == null )
         {
-            this.testIdRefs = Arrays.asList( new Object[]
-                {
-                    "ID"
-                } );
+            this.testIdRefs = Collections.singletonList( "ID" );
 
         }
 
@@ -134,10 +128,7 @@ public class SimpleTypeAttributesCollectionsTest
     {
         if ( this.testTokens == null )
         {
-            this.testTokens = Arrays.asList( new String[]
-                {
-                    "NMTOKEN 1", "NMTOKEN 2", "NMTOKEN 3"
-                } );
+            this.testTokens = Arrays.asList( "NMTOKEN 1", "NMTOKEN 2", "NMTOKEN 3" );
 
         }
 
@@ -156,7 +147,7 @@ public class SimpleTypeAttributesCollectionsTest
 
     public void assertTestBytes( final byte[] bytes )
     {
-        Assert.assertTrue( Arrays.equals( this.getTestBytes(), bytes ) );
+        Assert.assertArrayEquals(this.getTestBytes(), bytes);
     }
 
     public SimpleTypeAttributes getTestSimpleTypeAttributes() throws DatatypeConfigurationException
@@ -199,7 +190,7 @@ public class SimpleTypeAttributesCollectionsTest
         t.setQName( this.getTestQName() );
         t.setShort( (short) 100 );
         t.setString( "String" );
-        t.setTime( DatatypeFactory.newInstance().newXMLGregorianCalendar() );
+        t.setTime( this.getTestCalendar() );
         t.setToken( "Token" );
         t.setUnsignedByte( (short) 100 );
         t.setUnsignedInt( 100L );
@@ -218,16 +209,16 @@ public class SimpleTypeAttributesCollectionsTest
         Assert.assertEquals( "any", a.getAnySimpleType() );
         Assert.assertEquals( "anyURI", a.getAnyURI() );
         this.assertTestBytes( a.getBase64Binary() );
-        Assert.assertEquals( true, a.isBoolean() );
+        Assert.assertTrue( a.isBoolean() );
         Assert.assertEquals( 1, a.getByte() );
         Assert.assertEquals( this.getTestCalendar(), a.getDate() );
         Assert.assertEquals( this.getTestCalendar(), a.getDateTime() );
         Assert.assertEquals( BigDecimal.TEN, a.getDecimal() );
-        Assert.assertEquals( 100.0D, a.getDouble() );
+        Assert.assertEquals(100.0D, a.getDouble(), CommonHelper.DOUBLE_EPSILON );
         Assert.assertEquals( this.getTestDuration(), a.getDuration() );
         Assert.assertEquals( this.getTestEntities(), a.getENTITIES() );
         Assert.assertEquals( "ENTITY", a.getENTITY() );
-        Assert.assertEquals( 100.0F, a.getFloat() );
+        Assert.assertEquals(100.0F, a.getFloat(), CommonHelper.FLOAT_EPSILON );
         Assert.assertEquals( this.getTestCalendar(), a.getGDay() );
         Assert.assertEquals( this.getTestCalendar(), a.getGMonth() );
         Assert.assertEquals( this.getTestCalendar(), a.getGMonthDay() );

@@ -195,7 +195,7 @@ CC-XJC
 
             * java.net.URL
 
-            * javax.activation.MimeType
+            * jakarta.activation.MimeType
 
 * Support
 
